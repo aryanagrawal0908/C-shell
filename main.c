@@ -20,33 +20,33 @@ int caller(char *input_command, int bg, int *flag, int pipe_flag_write, int pipe
         }
         has_pipe = 1;
     }
-    if (strstr(input_command3, ">>"))
+    if (strstr(input_command3, ">>"))// append
     {
         flag_append = 1;
         out_file = strtok(strstr(input_command3, ">>") + 2, " \t");
     }
-    else if (strstr(input_command3, ">"))
+    else if (strstr(input_command3, ">"))// write
     {
         flag_write = 1;
         out_file = strtok(strstr(input_command3, ">") + 1, " \t");
     }
-    if (strstr(input_command3, "<"))
+    if (strstr(input_command3, "<"))// read
     {
         flag_read = 1;
         in_file = strtok(strstr(input_command3, "<") + 1, " \t");
     }
-    if (flag_read && in_file)
+    if (flag_read && in_file) // input read from file
     {
-        fd_in = open(in_file, O_RDONLY);
+        fd_in = open(in_file, O_RDONLY);// open the file in read mode
         if (fd_in < 0)
         {
             perror("open input file");
             return -1;
         }
-        dup2(fd_in, STDIN_FILENO);
+        dup2(fd_in, STDIN_FILENO);// redirect standard input to the file
         close(fd_in);
     }
-    else if (pipe_flag_read)
+    else if (pipe_flag_read) // input read from pipe
     {
         // printf("read\n");
         fd_in = fd_read;
@@ -54,7 +54,7 @@ int caller(char *input_command, int bg, int *flag, int pipe_flag_write, int pipe
         close(fd_read);
     }
 
-    if (flag_append && out_file)
+    if (flag_append && out_file)// output append to file
     {
         fd_out = open(out_file, O_WRONLY | O_CREAT | O_APPEND, S_IRWXU);
         if (fd_out < 0)
@@ -65,9 +65,14 @@ int caller(char *input_command, int bg, int *flag, int pipe_flag_write, int pipe
         dup2(fd_out, STDOUT_FILENO);
     }
 
-    else if (flag_write && out_file)
+    else if (flag_write && out_file)// output write to file
     {
         fd_out = open(out_file, O_WRONLY | O_CREAT | O_TRUNC, S_IRWXU);
+        // S_IRWXU gives read, write and execute permission to the user
+        // O_CREAT creates the file if it does not exist
+        // O_TRUNC truncates the file to zero length if it already exists
+        // O_WRONLY opens the file in write mode
+        // O_APPEND appends the output to the end of the file
         if (fd_out < 0)
         {
             perror("open output file");
@@ -75,7 +80,7 @@ int caller(char *input_command, int bg, int *flag, int pipe_flag_write, int pipe
         }
         dup2(fd_out, STDOUT_FILENO);
     }
-    else if (pipe_flag_write)
+    else if (pipe_flag_write) // output write to pipe
     {
         fd_out = fd_pipe[1];
         dup2(fd_pipe[1], STDOUT_FILENO);
@@ -139,10 +144,10 @@ int caller(char *input_command, int bg, int *flag, int pipe_flag_write, int pipe
         char *time = strtok(NULL, " \t");
         last_pid(atoi(time));
     }
-    else if (strcmp(command, "iMan") == 0)
-    {
-        fetch_and_display_man_page(strtok(NULL, " \t"));
-    }
+    // else if (strcmp(command, "iMan") == 0)
+    // {
+    //     fetch_and_display_man_page(strtok(NULL, " \t"));
+    // }
     else if (strcmp(command, "nano") == 0)
     {
         nano_handler(input_command2, bg, flag);
@@ -236,6 +241,7 @@ int caller(char *input_command, int bg, int *flag, int pipe_flag_write, int pipe
             {
                 add_process(&process_list, pid, input_command2);
                 printf("%d\n", pid);
+                // process completion stauts is printed using sig_child handler everytime on starting the terminal
             }
         }
     }
@@ -262,8 +268,8 @@ int main()
 
     begin();
     foreground_pid = -1;
-    signal(SIGINT, sigint_handler);
-    signal(SIGTSTP, sigtstp_handler);
+    signal(SIGINT, sigint_handler); // ctrl+c handler
+    signal(SIGTSTP, sigtstp_handler); // ctrl+z handler
     while (1)
     {
         print_prompt(home_path, time_exceed_command);
@@ -303,7 +309,7 @@ int main()
 
         if (check_ampersand_pipe(input))
         {
-            char *input3 = replace_word_in_line(input);
+            char *input3 = replace_word_in_line(input);// replace alias with actual command
             if (input3 != NULL)
                 command_handler(input3);
             free(input3);
