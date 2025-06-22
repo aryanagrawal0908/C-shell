@@ -120,7 +120,7 @@ bool seek(int l, int f, int e, char *search, char *direc, char *store_path)
                         }
                         else
                         {
-                            snprintf(relative_path, sizeof(relative_path), "./%s/%s", current_path + strlen(start_path) + 1, entry->d_name);
+                            snprintf(relative_path, sizeof(relative_path), "./%s/%s", current_path + strlen(start_path) + 1, entry->d_name);// path contructed fully
                         }
                         printf("\033[34m%s\033[0m\n", relative_path);
                     }
@@ -179,7 +179,7 @@ bool seek(int l, int f, int e, char *search, char *direc, char *store_path)
                         {
                             snprintf(store_path, PATH, "%s/%s", current_path, entry->d_name);
                             count++;
-                            printf("\033[32m%s\033[0m\n", relative_path);
+                            printf("\033[32m%s\033[0m\n", relative_path);// green color for files
                         }
                     }
                 }
@@ -337,7 +337,7 @@ void seek_handler(char *pipe, int flag_read, char *in_file)
                     char directrix_path[COMMAND_PATH];
                     strcpy(directrix_path, arg);
                     char ret[COMMAND_PATH];
-                    if (seek(d, f, e, search, directrix_path, ret))
+                    if (seek(d, f, e, search, directrix_path, ret))// curr directory is changed
                     {
                         char previous_dir2[PATH];
                         getcwd(previous_dir2, PATH);
@@ -353,7 +353,7 @@ void seek_handler(char *pipe, int flag_read, char *in_file)
                 else
                 {
                     char ret[COMMAND_PATH];
-                    if (seek(d, f, e, search, NULL, ret))
+                    if (seek(d, f, e, search, NULL, ret))// curr directory is changed
                     {
                         char previous_dir2[PATH];
                         getcwd(previous_dir2, PATH);
@@ -371,98 +371,6 @@ void seek_handler(char *pipe, int flag_read, char *in_file)
     }
     else
     {
-        // FILE *file;
-        // char line[COMMAND_PATH];
-        // file = fopen(in_file, "r");
-        // if (file == NULL)
-        // {
-        //     perror("Error opening file");
-        //     return;
-        // }
-        // else
-        // {
-        //     while (fgets(line, sizeof(line), file))
-        //     {
-        //         if (line[strlen(line) - 1] == '\n')
-        //         {
-        //             line[strlen(line) - 1] = '\0';
-        //         }
-        //         else
-        //         {
-        //             line[strlen(line)] = '\0';
-        //         }
-        //         char *line2 = strtok(line, " \t");
-        //         while (line2 != NULL)
-        //         {
-        //             if (line2[0] == '-' && strlen(line2) > 1)
-        //             {
-        //                 if (line2[1] == 'd')
-        //                 {
-        //                     d = 1;
-        //                 }
-        //                 else if (line2[1] == 'f')
-        //                 {
-        //                     f = 1;
-        //                 }
-        //                 else if (line2[1] == 'e')
-        //                 {
-        //                     e = 1;
-        //                 }
-        //                 else
-        //                 {
-        //                     printf("Invalid Flag!!\n");
-        //                     return;
-        //                 }
-
-        //                 if (d && f)
-        //                 {
-        //                     printf("Invalid Flags!!\n");
-        //                     return;
-        //                 }
-        //             }
-        //             else
-        //             {
-        //                 char search[COMMAND_PATH];
-        //                 strcpy(search, line2);
-        //                 line2 = strtok(NULL, " \t");
-        //                 if (line2 != NULL && strcmp(line2, ">>") != 0 && strcmp(line2, ">") != 0 && strcmp(line2, "<") != 0)
-        //                 {
-        //                     char directrix_path[COMMAND_PATH];
-        //                     strcpy(directrix_path, line2);
-        //                     char ret[COMMAND_PATH];
-        //                     if (seek(d, f, e, search, directrix_path, ret))
-        //                     {
-        //                         char previous_dir2[PATH];
-        //                         getcwd(previous_dir2, PATH);
-        //                         hop(ret);
-        //                         char previous_dir3[PATH];
-        //                         getcwd(previous_dir3, PATH);
-        //                         if (strcmp(previous_dir2, previous_dir3) != 0)
-        //                         {
-        //                             strcpy(previous_dir, previous_dir2);
-        //                         }
-        //                     }
-        //                 }
-        //                 else
-        //                 {
-        //                     char ret[COMMAND_PATH];
-        //                     if (seek(d, f, e, search, NULL, ret))
-        //                     {
-        //                         char previous_dir2[PATH];
-        //                         getcwd(previous_dir2, PATH);
-        //                         char previous_dir3[PATH];
-        //                         getcwd(previous_dir3, PATH);
-        //                         if (strcmp(previous_dir2, previous_dir3) != 0)
-        //                         {
-        //                             strcpy(previous_dir, previous_dir2);
-        //                         }
-        //                     }
-        //                 }
-        //             }
-        //             line2 = strtok(NULL, " \t");
-        //         }
-        //     }
-        // }
         printf("Invalid use of redirection!!\n");
     }
 }

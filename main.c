@@ -144,10 +144,6 @@ int caller(char *input_command, int bg, int *flag, int pipe_flag_write, int pipe
         char *time = strtok(NULL, " \t");
         last_pid(atoi(time));
     }
-    // else if (strcmp(command, "iMan") == 0)
-    // {
-    //     fetch_and_display_man_page(strtok(NULL, " \t"));
-    // }
     else if (strcmp(command, "nano") == 0)
     {
         nano_handler(input_command2, bg, flag);
